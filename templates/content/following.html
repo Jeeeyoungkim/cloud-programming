@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'assets/config.js' %}"></script>
+    <script src="{% static 'js/profile.js' %}"></script>
+
+    <title>following</title>
+    <link rel="stylesheet" href="{% static 'css/config.css' %}" />
+  </head>
+  <body>
+    <div class="relative content bg-gray-50 divide-y divider-gray-200">
+      <nav class="bg-white border-gray-200">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-2"
+        >
+          <a href="{% url 'main:index' %}" class="flex items-center">
+            <img src="{% static 'assets/cloud_3d.png' %}" class="h-12 mr-3" />
+          </a>
+        </div>
+      </nav>
+
+
+
+      <div class="w-full max-w-sm rounded-lg"></div>
+
+      <div
+        class="mt-3 w-full max-w-md bg-white p-4 border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h5
+            class="text-xl font-bold leading-none text-gray-900 dark:text-white"
+          >
+            팔로잉 목록
+          </h5>
+        </div>
+        <div class="flow-root">
+          <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+            {% for following in followings %}
+              <li class="py-3 sm:py-4">
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0">
+                    <img
+                      class="w-10 h-10 rounded-full"
+                      src="{{following.image.url}}"
+                      alt="Neil image"
+                    />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p
+                      class="text-sm font-medium text-gray-900 truncate dark:text-white"
+                    >
+                      {{following.nickname}}
+                    </p>
+                    <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                      {{following.username}}
+                    </p>
+                  </div>
+                  {% if user == following %}
+                  {% elif user in following.followers.all %}
+                    <button
+                      type="button"
+                      id = "{{following.nickname}}"
+                      class="unFollowBt py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                      삭제
+                    </button>
+                  {% else %}
+                    <button
+                      type="button"
+                      id = "{{following.nickname}}"
+                      class="followBt py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+                    >
+                      팔로우
+                    </button>
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

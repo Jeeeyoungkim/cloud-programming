@@ -1,0 +1,154 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'assets/config.js' %}"></script>
+    <script src="{% static 'js/profile.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <title>profile</title>
+    <link rel="stylesheet" href="{% static 'css/config.css' %}" />
+  </head>
+  <body>
+    <div class="relative content bg-gray-50 divide-y divider-gray-200">
+      <nav class="bg-white border-gray-200">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-2"
+        >
+          <a href="{% url 'main:index' %}" class="flex items-center">
+            <img src="{% static 'assets/cloud_3d.png' %}" class="h-12 mr-3" />
+          </a>
+        </div>
+      </nav>
+
+      <!--프로필 컴포넌트-->
+
+      <div class="w-full max-w-sm rounded-lg">
+        <div class="flex items-center justify-space p-3">
+          <div class="flex-col mr-3">
+            <img
+              class="w-24 h-24 m-3 rounded-full shadow-lg"
+              src="{{cur_user.image.url}}"
+              alt="Bonnie image"
+            />
+
+            {% if user == cur_user %}
+              <div class="flex justify-center">
+                <a
+                  href="{% url 'account:user_update' %}"
+                  class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >프로필 수정하기</a
+                >
+              </div>
+            {% elif user in cur_user.followers.all %}
+                  <button
+                  class="followBt inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >팔로잉</button>
+            {% else %}
+              <div class="flex justify-center">
+                <button
+                  id = "{{cur_user.nickname}}"
+                  class="followBt inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >팔로우</button>
+              </div>
+            {% endif %}
+          </div>
+          <div class="flex-col">
+            <h5 class="text-xl font-medium text-gray-900">{{cur_user.nickname}}</h5>
+            <span class="flex text-sm text-gray-500 mb-4">{{cur_user.username}}</span>
+            {% if cur_user.introduction %}
+              <span class="flex text-m text-gray-900 dark:text-gray-400"
+                >{{cur_user.introduction}}</span
+              >
+            {% endif %}
+
+            <span class="flex text-base font-medium text-gray-900"
+              ><a href = "{% url 'account:followings' cur_user.nickname %}">팔로잉</a> {{cur_user.followings.all|length}} / <a href = "{% url 'account:followers' cur_user.nickname %}">팔로워</a> {{cur_user.followers.all|length}}</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!--콘텐츠 카드-->
+      <div
+        class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm m-3"
+      >
+        {% for post in post_list %}
+          <div class="p-5">
+            <a href="{% url 'content:post_detail' post.id %}">
+              <img class="rounded-t-lg" src="{{post.image.url}}" alt="" />
+            </a>
+
+            <div class="w-full rounded-lg">
+              <div class="flex">
+                <div class="flex">
+                  <a href = "{% url 'account:user_detail' cur_user.nickname %}">
+                    <img
+                      class="w-14 h-14 ml-0 m-3 rounded-full shadow-lg"
+                      src="{{cur_user.image.url}}"
+                      alt="Bonnie image"
+                    />
+                  </a>
+
+                </div>
+                <div class="flex flex-col mt-4">
+                  <h5 class="text-xl font-medium text-gray-900">{{post.author.nickname}}</h5>
+                  <span class="text-sm text-gray-500">{{post.author.username}}</span>
+                </div>
+              </div>
+            </div>
+
+            <p class="mb-3 font-normal text-gray-700">
+              {{post.content}}
+            </p>
+
+            <p class="mb-3 text-sm text-gray-500">{{post.created_at|date:'Y-m-d H:i'}}</p>
+            <div class="flex flex-warp justify-between">
+              <div class="flex flex-warp">
+                <button
+                  id = "sad_{{post.id}}"
+                  class="sadBt inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 shadow-sm"
+                >
+                  슬퍼요 {{post.sad_users.all.count}}
+                </button>
+
+                <button
+                  type="button"
+                  id = "{{post.id}}"
+                  class="postSaveBt ml-3 text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"
+                    ></path>
+                    <path
+                      d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+
+              <button
+                class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-blue-700 bg-white rounded-lg hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-100 shadow-sm"
+              >
+                댓글 {{post.comment_set.all|length}}
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

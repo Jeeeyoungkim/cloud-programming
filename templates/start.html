@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{% static 'assets/config.js' %}"></script>
+
+    <title>start</title>
+    <link rel="stylesheet" href="{% static 'css/config.css' %}" />
+  </head>
+  <body>
+    <div class="relative content bg-gradient-to-r from-cyan-500 to-blue-500">
+      <div>
+        <div class="flex justify-center mt-24">
+            <img src="{% static 'assets/cloud_3d.png' %}" class="h-12 mr-3" />
+        </div>
+        <p class="pt-3 flex justify-center text-3xl font-semibold text-white">
+          CLOODY
+        </p>
+      </div>
+
+      <span class="flex flex-col">
+        <button
+          type="button"
+          class="w-32 mt-52 m-auto mb-3 flex justify-center rounded-md bg-white px-5 py-2 text-b text-mySky shadow-sm hover:bg-stone-100 drop-shadow-md"
+            onclick = "location.href = '{% url 'account:login' %}'"
+        >
+          로그인 하기
+        </button>
+        <p class="m-auto text-sm p-2 text-white">CLOODY가 처음이세요?</p>
+        <button
+          type="button"
+          class="w-32 m-auto flex justify-center rounded-md bg-white px-5 py-2 text-b text-mySky shadow-sm hover:bg-stone-100 drop-shadow-md"
+          onclick = "location.href = '{% url 'account:signup' %}'">
+          회원가입 하기
+        </button>
+      </span>
+    </div>
+  </body>
+</html>

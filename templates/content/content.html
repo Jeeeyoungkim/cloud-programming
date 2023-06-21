@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'assets/config.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <title>content</title>
+    <link rel="stylesheet" href="{% static 'css/config.css' %}" />
+  </head>
+  <body>
+    <div class="relative content bg-gray-50">
+      <nav class="bg-white border-gray-200">
+        <div
+          class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-2"
+        >
+          <a href="{% url 'main:index' %}" class="flex items-center">
+            <img src="{% static 'assets/cloud_3d.png' %}" class="h-12 mr-3" />
+            <span class="self-center text-2xl font-semibold whitespace-nowrap"
+              >CLOODY</span
+            >
+          </a>
+        </div>
+      </nav>
+
+      <!--콘텐츠 아이템-->
+      <div
+        class="max-w-sm bg-white border border-gray-200 rounded-lg shadow-sm m-3"
+      >
+        <div class="p-5">
+          <img class="rounded-t-lg" src="{{post.image.url}}" alt="" />
+
+          <div class="w-full rounded-lg">
+            <div class="flex">
+              <div class="flex">
+                <a href = "{% url 'account:user_detail' post.author.nickname %}">
+                  <img
+                    class="w-14 h-14 ml-0 m-3 rounded-full shadow-lg"
+                    src="{{post.author.image.url}}"
+                    alt="Bonnie image"
+                  />
+                </a>
+
+              </div>
+              <div class="flex flex-col mt-4">
+                <h5 class="text-xl font-medium text-gray-900">{{post.author.nickname}}</h5>
+                <span class="text-sm text-gray-500">{{post.author.username}}</span>
+              </div>
+            </div>
+          </div>
+
+          <p class="mb-3 font-normal text-gray-700">
+            {{post.content}}
+          </p>
+          <p class="mb-3 text-sm text-gray-500">{{post.created_at|date:'Y-m-d H:i'}}</p>
+
+          <div class="flex flex-warp justify-between">
+            <div class="flex flex-warp">
+              <button
+                id = "sad_{{post.id}}"
+                class="sadBt inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 shadow-sm"
+              >
+                슬퍼요 {{post.sad_users.all.count}}
+              </button>
+
+              <button
+                type="button"
+                id = "{{post.id}}"
+                class="postSaveBt ml-3 text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"
+                  ></path>
+                  <path
+                    d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+
+            <button
+              class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-blue-700 bg-white rounded-lg hover:bg-gray-50 focus:ring-4 focus:outline-none focus:ring-gray-100 shadow-sm"
+            >
+              댓글 {{post.comment_set.all|length}}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!--댓글 달기 폼-->
+
+      <form action = "{% url 'content:comment_create' post.id %}" method = "post">
+        {% csrf_token %}
+        <label for="comment" class="sr-only">Your message</label>
+        <div
+          class="flex items-center px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700"
+        >
+
+          <img
+            class="w-12 h-12 ml-5 mr-3 rounded-full mb-0"
+            src="{{user.image.url}}"
+          />
+          <textarea
+            id="comment"
+            name = "content"
+            rows="1"
+            class="block mr-4 ml-2 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            placeholder="댓글을 달아주세요"
+          ></textarea>
+          <button
+            type="submit"
+            id = "createCommentBt"
+            class="inline-flex justify-center p-2 text-blue-600 rounded-full cursor-pointer hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"
+          >
+            <svg
+              aria-hidden="true"
+              class="w-6 h-6 rotate-90"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <input type = "submit" id = "createCommentSb" style = "display:none;">
+      </form>
+
+      <!--댓글-->
+      <div class="p-5 pt-0 mb-4 border border-gray-100 rounded-lg bg-gray-50">
+        <ol class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
+          {% for comment in post.comment_set.all %}
+            <li>
+                <div class="flex items-center">
+                  <a href = "{% url 'account:user_detail' comment.author.nickname %}">
+                    <img
+                      class="w-10 h-10 ml-0 m-3 rounded-full sm:mb-0"
+                      src="{{comment.author.image.url}}"
+                    />
+                  </a>
+
+
+                  <div class="text-sm font-normal">
+                    <p>{{comment.author.nickname}}</p>
+                    <p class="text-gray-600">{{comment.author.username}}</p>
+                  </div>
+                </div>
+                <div class="text-gray-600">
+                  <div class="text-base font-normal">{{comment.content}}</div>
+                </div>
+                <p class="mb-3 text-sm text-gray-500">{{comment.created_at|date:'Y-m-d H:i'}}</p>
+              </a>
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </body>
+</html>
